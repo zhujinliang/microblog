@@ -10,7 +10,50 @@ exports.init = function(app) {
   };
 
   app.get('/', function index(req, res) {
-    res.render('index', { title: 'Express' });
+    res.render('index', { title: '首页'});
+  });
+
+  app.get('/u/:user', function user(req, res) {
+  
+  });
+
+  app.post('/post', function post(req, res) {
+  
+  });
+
+  app.get('/reg', function reg(req, res) {
+    res.render('reg', {
+      title: '用户注册',
+    });
+  });
+
+  app.post('/reg', function doReg(req, res) {
+    // Check if the two password is the same.
+    if (req.body['password-repeat'] != req.body['password']) {
+      req.flash('error', '两次输入的密码不一致');
+      return res.redirect('/reg');
+    }
+    var md5 = crypto.createHash('md5');
+    var password = md5.update(req.body.password).digest('base64');
+
+    var newUser = new User({
+      name: req.body.username,
+      password: req.body.password,
+    });
+
+    // Check if the username exists.
+  });
+
+  app.get('/login', function login(req, res) {
+  
+  });
+
+  app.post('/login', function doLogin(req, res) {
+  
+  });
+
+  app.get('/logout', function logout(req, res) {
+  
   });
 
   app.get('/users', user.list);
