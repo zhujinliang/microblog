@@ -1,6 +1,8 @@
 
 exports.init = function(app) {
+  var crypto = require('crypto');
   var user = require('./user');
+  var User = require('../models/user.js');
   var users = {
     'jlzhu': {
       name: 'Jinliang Zhu',
@@ -42,6 +44,23 @@ exports.init = function(app) {
     });
 
     // Check if the username exists.
+    User.get(newUser.name, function(err, user) {
+      if (user) {
+        err = 'Username already exists.';
+      }
+      if (err) {
+        req.flash('error', err);
+        return res.redirect('/reg');
+      }
+      // If not exists.
+      newUser.save(function(err) {
+        req.flash('error', err);
+        return res.redirect('/reg');
+      });
+      req.session.user = newUser;
+      req.flash('success', '注册成功');
+      res.redirect('/');
+    });
   });
 
   app.get('/login', function login(req, res) {
