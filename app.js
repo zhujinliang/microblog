@@ -11,7 +11,7 @@ var express = require('express')
 
 var app = express();
 
-var MongoStore = require('connect-mongo');
+var MongoStore = require('connect-mongo')(express);
 var settings = require('./settings');
 
 // all environments
