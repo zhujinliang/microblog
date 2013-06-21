@@ -1,46 +1,39 @@
-
 /**
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , http = require('http')
-  , path = require('path');
-
-var app = express();
-
-var MongoStore = require('connect-mongo')(express);
+var express = require('express');
+var routes = require('./routes');
 var settings = require('./settings');
+var MongoStore = require('connect-mongo');
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-app.set('view options', {
-  layout: true
+var app = module.exports = express.createServer();
+
+// Configuration
+
+app.configure(function(){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'ejs');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.cookieParser());
+  app.use(express.session({
+    secret: settings.cookieSecret,
+    store: new MongoStore({
+      db: settings.db
+    })
+  }));
+  app.use(express.router(routes));
+  app.use(express.static(__dirname + '/public'));
 });
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-app.use(express.cookieParser());
-app.use(express.session({
-  secret: settings.cookieSecret,
-  store: new MongoStore({
-    db: settings.db
-  })
-}));
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
 
-// development only
-if ('development' == app.get('env')) {
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+app.configure('production', function(){
   app.use(express.errorHandler());
-}
-
-routes.init(app);
+});
 
 app.dynamicHelpers({
   user: function(req, res) {
@@ -48,22 +41,19 @@ app.dynamicHelpers({
   },
   error: function(req, res) {
     var err = req.flash('error');
-    if (err.length) {
+    if (err.length)
       return err;
-    } else {
+    else
       return null;
-    }
   },
   success: function(req, res) {
     var succ = req.flash('success');
-    if (succ.length) {
+    if (succ.length)
       return succ;
-    } else {
+    else
       return null;
-    }
   },
 });
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
-});
+app.listen(3000);
+console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

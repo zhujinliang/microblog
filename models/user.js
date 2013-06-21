@@ -3,11 +3,11 @@ var mongodb = require('./db');
 function User(user) {
   this.name = user.name;
   this.password = user.password;
-}
+};
 module.exports = User;
 
 User.prototype.save = function save(callback) {
-  // Save into Mongodb document.
+  // 存入 Mongodb 的文檔
   var user = {
     name: this.name,
     password: this.password,
@@ -16,15 +16,14 @@ User.prototype.save = function save(callback) {
     if (err) {
       return callback(err);
     }
-    // Read the collection of users.
     db.collection('users', function(err, collection) {
       if (err) {
         mongodb.close();
         return callback(err);
       }
-      // Add index for attribute name.
+      // 为 name 属性添加索引
       collection.ensureIndex('name', {unique: true});
-      // Write to user document.
+      // 写入 user 文档
       collection.insert(user, {safe: true}, function(err, user) {
         mongodb.close();
         callback(err, user);
@@ -34,21 +33,20 @@ User.prototype.save = function save(callback) {
 };
 
 User.get = function get(username, callback) {
-  mongodb.open(function(err, db){
+  mongodb.open(function(err, db) {
     if (err) {
       return callback(err);
     }
-    // Read the collection of users.
     db.collection('users', function(err, collection) {
       if (err) {
         mongodb.close();
         return callback(err);
       }
-      // Find the document that name = username.
+      // 查找 name 属性为 username 的文档
       collection.findOne({name: username}, function(err, doc) {
         mongodb.close();
         if (doc) {
-          // Tranfer to User object.
+          // 封装文档为 User 对象
           var user = new User(doc);
           callback(err, user);
         } else {

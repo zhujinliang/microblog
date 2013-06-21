@@ -1,14 +1,11 @@
 {
-  "name": "microblog",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
-  "dependencies": {
-    "express": "3.2.6",
-    "ejs": "*",
-    "connect-mongo": "0.1.8",
-    "mongodb": "*"
+    "name": "microblog"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "ejs": "*"
+    , "connect-mongo": "0.1.7"
+    , "mongodb": "0.9.9"
   }
 }
