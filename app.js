@@ -42,6 +42,28 @@ if ('development' == app.get('env')) {
 
 routes.init(app);
 
+app.dynamicHelpers({
+  user: function(req, res) {
+    return req.session.user;
+  },
+  error: function(req, res) {
+    var err = req.flash('error');
+    if (err.length) {
+      return err;
+    } else {
+      return null;
+    }
+  },
+  success: function(req, res) {
+    var succ = req.flash('success');
+    if (succ.length) {
+      return succ;
+    } else {
+      return null;
+    }
+  },
+});
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
