@@ -18,3 +18,12 @@ A tinny microblog based on node.
 ## Install the node package
 
     npm install
+
+## Run the app
+* Start the mongodb
+
+    mongod --dbpath=/tmp/ &
+
+* Run the microblog
+
+    node app.js
