@@ -22,8 +22,13 @@ A tinny microblog based on node.
 ## Run the app
 * Start the mongodb
 
+     
     mongod --dbpath=/tmp/ &
+    
 
 * Run the microblog
 
+    
     node app.js
+    
+
